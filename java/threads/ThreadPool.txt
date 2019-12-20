@@ -1,0 +1,50 @@
+// Thread pool code
+// has two classes: 
+//	JTP for main class
+//	Worker class for the thread pools
+package sync;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class Worker implements Runnable {
+	private String stra;
+	
+	public Worker(String stra) {
+		this.stra = stra;
+	}
+	public void run() {
+		System.out.println(Thread.currentThread().getName());
+		System.out.println("at the start --> "+stra);
+		// do something code
+		doSomething();
+		System.out.println(Thread.currentThread().getName()+"ending");
+	}
+	void doSomething() {
+		try {
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException obje) {
+			System.out.println("some exeption");
+		}
+	}
+}
+
+package sync;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+public class JTP {
+	public static void main(String[] args) {
+		ExecutorService executor = Executors.newFixedThreadPool(3);
+		for (int i=0; i<10; i++) {
+			Runnable w = new Worker("" + i);
+			executor.execute(w);
+		}
+		executor.shutdown();
+		while(!executor.isTerminated()) {
+			
+		}
+		System.out.println("done wil all the threads");
+	}
+	
+}
+ 
