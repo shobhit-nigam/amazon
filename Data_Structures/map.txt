@@ -1,0 +1,155 @@
+// custom map
+//	base class = MyEntry
+//	map calss = AtlasMap
+//	main class = AnotherMain
+//		   = YetAnotherMain
+
+
+public class MyEntry <K, V>{
+	private final K key;
+	private V value;
+	
+	public MyEntry(K key, V value) {
+		super();
+		this.key = key;
+		this.value = value;
+	}
+	
+	public V getValue() {
+		return value;
+	}
+	public void setValue(V value) {
+		this.value = value;
+	}
+	public K getKey() {
+		return key;
+	}
+}
+	
+
+
+import java.util.*;
+public class AtlasMap<K,V> {
+	int size;
+	int CAPACITY = 3;
+	private MyEntry<K, V>[] mkv = new MyEntry[CAPACITY];
+	
+	public void put(K key, V value) {
+		boolean n = true;
+		for (int i=0; i<size; i++) {
+			if(mkv[i].getKey().equals(key)) {
+				mkv[i].setValue(value);
+				n = false;
+			}
+		}
+		if(n) {
+			ifFull();
+			mkv[size++] = new MyEntry<K, V>(key, value);
+		}
+		return;
+	}
+	
+	private void ifFull() {
+		if(size == mkv.length) {
+			int newSize = mkv.length * 2;
+			mkv = Arrays.copyOf(mkv, newSize);
+		}
+	}
+	
+	public V get(K key) {
+		for(int i=0; i < size; i++) {
+			if(mkv[i] != null) {
+				if(mkv[i].getKey().equals(key)) {
+					return mkv[i].getValue();
+				}
+			}
+		}
+		return null;
+	}
+//	public int get(K key) {
+//		for(int i=0; i < size; i++) {
+//			if(mkv[i] != null) {
+//				if(mkv[i].getKey().equals(key)) {
+//					System.out.println(mkv[i].getValue());
+//				}
+//			}
+//		}
+//		return 1111;
+//	}
+	
+	public int size() {
+		return size;
+	}
+	
+	public void remove(K key) {
+		for(int i=0; i<size; i++) {
+			if(mkv[i].getKey().equals(key)) {
+				mkv[i] = null;
+				size--;
+				shift(i);
+			}
+		}
+		
+	}
+	
+	public Set<K> keySet(){
+		Set<K> set = new HashSet<K>();
+		for(int i =0; i<size; i++) {
+			set.add(mkv[i].getKey());
+		}
+		return set;
+	}
+	private void shift(int start) {
+		int i = 0;
+		for(i=start; i<size; i++) {
+			mkv[i] = mkv[i+1];
+		}
+		mkv[i+1] = null;
+	}
+}
+
+import java.util.*;
+
+public class AnotherMain {
+
+	public static void main(String[] args) {
+		AtlasMap amp = new AtlasMap();
+		amp.put("abhishek", 2);
+		amp.put("tenet", 3);
+		amp.put("inception", 1);
+		amp.put("maverick" , 1995);
+		System.out.println(amp.get("maverick"));
+		amp.put("maverick" , 2020);		
+		System.out.println(amp.get("maverick"));		
+	}
+}
+
+
+public class YetAnotherMain {
+
+	public static void main(String[] args) {
+		AtlasMap amp = new AtlasMap();
+		amp.put(2, 20);
+		amp.put(3, 40);
+		amp.put(1, 10);
+		amp.put(4 , 30);
+//		for(int i=1; i<=4; i++) {
+//			System.out.println(amp.get(i));
+//		}
+//		amp.remove(3);
+//		System.out.println("after remove");
+		amp.get(1);
+		System.out.println(amp.size());
+		amp.remove(1);
+		System.out.println(amp.get(2));
+		System.out.println(amp.size());
+	}
+
+}
+//	20	40	30
+//	2	3	4
+
+
+
+
+
